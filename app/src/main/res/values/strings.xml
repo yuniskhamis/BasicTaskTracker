@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BasicTaskTracker</string>
+    <string name="take_tasks">Enter a new task!</string>
+</resources>
