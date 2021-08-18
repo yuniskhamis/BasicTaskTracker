@@ -1,45 +1,65 @@
 package com.yunis.basictasktracker
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var inputTask: EditText
-    private lateinit var mLayout: LinearLayout
+    private lateinit var inputTask: TextView
+    private lateinit var updateTask: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
 
-        mLayout = findViewById(R.id.linearLayout)
         inputTask = findViewById(R.id.TaskInput)
+        updateTask = findViewById(R.id.updateItem)
+
         val taskButton: Button = findViewById(R.id.button)
-        taskButton.setOnClickListener(onClick())
+        val clearButton: Button = findViewById(R.id.button2)
+        val updateButton: Button = findViewById(R.id.button3)
 
 
-    }
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        val taskList = mutableListOf<Any>()
 
-    private fun onClick(): View.OnClickListener? {
-        return View.OnClickListener {
-            mLayout.addView(createNewTextView(inputTask.text.toString()))
+        val adapter = RecyclerViewAdapter(taskList)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        taskButton.setOnClickListener {
+
+            taskList.add(inputTask.text.toString())
+            adapter.notifyDataSetChanged()
+
+
         }
+        updateButton.setOnClickListener {
+            taskList[updateTask.text.toString().toInt() - 1] = inputTask.text.toString()
+
+            adapter.notifyDataSetChanged()
+        }
+
+
+        val itemDecoration: ItemDecoration =
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        recyclerView.addItemDecoration(itemDecoration)
+
+        clearButton.setOnClickListener {
+            taskList.clear()
+
+            adapter.notifyDataSetChanged()
+
+        }
+
+
     }
 
-    private fun createNewTextView(text: String): TextView? {
 
-
-        val textView = TextView(this)
-        textView.textSize = 20F
-        textView.setTextColor(Color.parseColor("#000000"))
-        textView.text = text
-        return textView
-    }
 }
